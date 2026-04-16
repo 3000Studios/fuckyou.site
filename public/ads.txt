@@ -1,0 +1,5 @@
+# ads.txt for https://fuckyou.site
+# Replace ca-pub-XXXXXXXXXXXXXXXX with your actual Google AdSense publisher ID
+# before launching monetization. This file is required by AdSense for
+# verified ad delivery (per IAB Tech Lab spec).
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

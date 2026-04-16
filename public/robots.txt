@@ -1,0 +1,13 @@
+# robots.txt for https://fuckyou.site
+User-agent: *
+Allow: /
+Disallow: /404
+
+# AdSense / ads crawlers
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+Sitemap: https://fuckyou.site/sitemap.xml

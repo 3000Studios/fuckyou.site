@@ -1,0 +1,10 @@
+# Cloudflare Pages project configuration.
+# The project is deployed via: wrangler pages deploy dist --project-name=fuckyou-site
+# See README.md for full deployment instructions.
+
+name = "fuckyou-site"
+compatibility_date = "2025-01-15"
+pages_build_output_dir = "./dist"
+
+[vars]
+VITE_SITE_URL = "https://fuckyou.site"

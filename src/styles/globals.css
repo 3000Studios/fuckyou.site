@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background-color: #0a0a0a;
+}
+
+body {
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a31;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a44;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid #ff2a55;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Prose overrides for article content */
+.prose-rant {
+  color: #cfcfd4;
+  font-size: 1.075rem;
+  line-height: 1.75;
+}
+.prose-rant h2 {
+  color: #fff;
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+.prose-rant h3 {
+  color: #fff;
+  font-family: "Space Grotesk", Inter, sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+.prose-rant p {
+  margin: 0 0 1.15rem;
+}
+.prose-rant a {
+  color: #29d8ff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-rant a:hover {
+  color: #fff;
+}
+.prose-rant ul {
+  list-style: disc;
+  padding-left: 1.3rem;
+  margin-bottom: 1.25rem;
+}
+.prose-rant ol {
+  list-style: decimal;
+  padding-left: 1.3rem;
+  margin-bottom: 1.25rem;
+}
+.prose-rant li {
+  margin-bottom: 0.4rem;
+}
+.prose-rant blockquote {
+  border-left: 3px solid #ff2a55;
+  padding: 0.25rem 1rem;
+  margin: 1.5rem 0;
+  color: #f5f5f7;
+  font-style: italic;
+  background: rgba(255, 42, 85, 0.04);
+}
+.prose-rant strong {
+  color: #fff;
+}
+.prose-rant hr {
+  border-color: #2a2a31;
+  margin: 2rem 0;
+}
+
+/* Ad container */
+.ad-slot {
+  display: block;
+  width: 100%;
+  min-height: 90px;
+  overflow: hidden;
+  background: #111113;
+  border: 1px dashed #2a2a31;
+  border-radius: 12px;
+  color: #55555f;
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 0.25rem;
+  position: relative;
+}
+.ad-slot::before {
+  content: "Advertisement";
+  display: block;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #55555f;
+  padding: 0.35rem 0;
+}
+
+/* Gradient underline helper */
+.underline-neon {
+  background-image: linear-gradient(90deg, #ff2a55, #29d8ff);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 3px;
+  padding-bottom: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

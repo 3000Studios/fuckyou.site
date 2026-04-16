@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#1a0008"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="20%" cy="10%" r="60%">
+      <stop offset="0%" stop-color="#ff2a55" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ff2a55" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <g font-family="Space Grotesk, Inter, sans-serif" fill="#ffffff">
+    <text x="80" y="230" font-size="120" font-weight="700">fuckyou.site</text>
+    <text x="80" y="300" font-size="40" fill="#cfcfd4">The internet's loudest rant, in one place.</text>
+    <text x="80" y="360" font-size="28" fill="#29d8ff">Rants " Humor " Modern Life " Real Takes</text>
+  </g>
+  <rect x="80" y="470" width="140" height="6" fill="#ff2a55"/>
+</svg>
