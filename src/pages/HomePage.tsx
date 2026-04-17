@@ -65,7 +65,7 @@ export function HomePage() {
             to="/prank"
             kicker="Prank Call"
             title="Prank Generator"
-            body="Pick a scenario, personalize the details, generate a goofy fake-call audio script to share with your friends."
+            body="Pick a scenario, personalize the details, and run a goofy human-style fake-call conversation script to share."
             accent="from-neon-blue/25 via-ink-900 to-ink-900"
             emoji="📞"
           />

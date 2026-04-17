@@ -30,12 +30,7 @@ export function RoastPage() {
     },
   ]);
   const [input, setInput] = useState("");
-  const [speaking, setSpeaking] = useState(false);
   const [listening, setListening] = useState(false);
-  const [muted, setMuted] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("fys_roast_muted") === "1";
-  });
   const seenRef = useRef<Set<string>>(new Set());
   const logRef = useRef<HTMLDivElement | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -48,11 +43,6 @@ export function RoastPage() {
       !!(window.SpeechRecognition || window.webkitSpeechRecognition),
     []
   );
-  const ttsSupported = useMemo(
-    () => typeof window !== "undefined" && "speechSynthesis" in window,
-    []
-  );
-
   useEffect(() => {
     if (!logRef.current) return;
     logRef.current.scrollTo({
@@ -60,31 +50,6 @@ export function RoastPage() {
       behavior: "smooth",
     });
   }, [turns.length]);
-
-  useEffect(() => {
-    localStorage.setItem("fys_roast_muted", muted ? "1" : "0");
-  }, [muted]);
-
-  const speak = useCallback(
-    (text: string) => {
-      if (!ttsSupported || muted) return;
-      try {
-        const synth = window.speechSynthesis;
-        synth.cancel();
-        const u = new SpeechSynthesisUtterance(text);
-        u.rate = 1.05;
-        u.pitch = 0.85 + tier * 0.05;
-        u.volume = 1;
-        u.onstart = () => setSpeaking(true);
-        u.onend = () => setSpeaking(false);
-        u.onerror = () => setSpeaking(false);
-        synth.speak(u);
-      } catch {
-        /* ignore */
-      }
-    },
-    [muted, ttsSupported, tier]
-  );
 
   const sendToBot = useCallback(
     (text: string) => {
@@ -115,14 +80,13 @@ export function RoastPage() {
           ...prev,
           { id: prev.length, from: "bot", text: roast, tier: nextTierVal },
         ]);
-        speak(roast);
         track({
           name: "roast_turn",
           params: { tier: nextTierVal, anger },
         });
       }, 320);
     },
-    [tier, speak]
+    [tier]
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -206,7 +170,7 @@ export function RoastPage() {
       <section className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="grid md:grid-cols-[280px_1fr] gap-6">
           <div className="bg-ink-800/60 border border-ink-600 rounded-2xl p-5 h-fit sticky top-20">
-            <AngryAvatar tier={tier} speaking={speaking} />
+            <AngryAvatar tier={tier} speaking={false} />
             <div className="mt-4 text-center">
               <span
                 className={cx(
@@ -230,13 +194,6 @@ export function RoastPage() {
             </div>
 
             <div className="mt-5 flex gap-2">
-              <button
-                onClick={() => setMuted((m) => !m)}
-                className="flex-1 h-9 rounded-lg bg-ink-700 hover:bg-ink-600 text-sm font-medium"
-                aria-pressed={muted}
-              >
-                {muted ? "Unmute" : "Mute"}
-              </button>
               <button
                 onClick={reset}
                 className="flex-1 h-9 rounded-lg bg-ink-700 hover:bg-ink-600 text-sm font-medium"

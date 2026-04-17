@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Seo } from "../components/Seo";
@@ -26,30 +26,9 @@ export function PrankPage() {
   const [topic, setTopic] = useState("their mystery haircut");
   const [city, setCity] = useState("Toledo");
   const [playback, setPlayback] = useState<Playback | null>(null);
-  const [voiceIdx, setVoiceIdx] = useState<number>(0);
-  const ttsRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => tokens.subscribe(setWallet), []);
-
-  const voices = useMemo<SpeechSynthesisVoice[]>(() => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window))
-      return [];
-    return window.speechSynthesis.getVoices();
-  }, [playback?.playing]);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    const handler = () => {
-      // force voices to hydrate
-      window.speechSynthesis.getVoices();
-    };
-    window.speechSynthesis.onvoiceschanged = handler;
-    handler();
-    return () => {
-      window.speechSynthesis.onvoiceschanged = null;
-    };
-  }, []);
 
   const scenarioLines = useMemo(
     () => selected.lines({ name, topic, city }),
@@ -93,45 +72,24 @@ export function PrankPage() {
 
   useEffect(() => {
     if (!playback || !playback.playing) return;
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     const line = playback.lines[playback.index];
     if (!line) {
       setPlayback((p) => (p ? { ...p, playing: false } : p));
       return;
     }
 
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const u = new SpeechSynthesisUtterance(line.text);
-    const v = voices[voiceIdx] || voices[0];
-    if (v) u.voice = v;
-    u.rate = 1.0;
-    u.pitch = line.speaker === "VO" ? 0.75 : 1.0;
-    u.volume = 1;
-    u.onend = () => {
-      window.setTimeout(() => {
-        setPlayback((p) =>
-          p ? { ...p, index: p.index + 1, playing: true } : p
-        );
-      }, line.pause ?? 400);
-    };
-    u.onerror = () => {
+    const timer = window.setTimeout(() => {
       setPlayback((p) =>
         p ? { ...p, index: p.index + 1, playing: true } : p
       );
-    };
-    ttsRef.current = u;
-    synth.speak(u);
+    }, line.pause ?? 900);
 
     return () => {
-      synth.cancel();
+      window.clearTimeout(timer);
     };
-  }, [playback, voices, voiceIdx]);
+  }, [playback]);
 
   const stop = () => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
     setPlayback(null);
   };
 
@@ -152,7 +110,7 @@ export function PrankPage() {
     <>
       <Seo
         title="Prank Call Generator — Build Fake Calls for Your Friends"
-        description="Pick a scenario, generate a goofy fake-call audio script, share a link. Policy-safe, Twilio-free, no real phones harassed, 100% vibes."
+        description="Pick a scenario, generate a goofy fake-call conversation script, and share a link. Policy-safe, Twilio-free, no real phones harassed, 100% vibes."
         path="/prank"
         keywords={[
           "prank call generator",
@@ -175,11 +133,11 @@ export function PrankPage() {
               </h1>
               <p className="mt-2 text-ink-100 max-w-xl">
                 Pick a scenario, plug in their name, hit Generate. The site
-                plays a fake call script out loud in a goofy voice. Share the
-                link, send them the audio, lose your mind laughing.
+                runs a prebuilt human conversation script with live timing. Share
+                the link and let them read the fake call exchange in sequence.
               </p>
               <p className="mt-2 text-xs text-ink-300">
-                No real phone numbers are dialed. This is a parody audio
+                No real phone numbers are dialed. This is a parody
                 generator. Your Twilio-using competitors are getting banned —
                 you're not.
               </p>
@@ -249,25 +207,6 @@ export function PrankPage() {
                 />
               </div>
 
-              {voices.length > 0 && (
-                <div className="mt-3">
-                  <label className="block text-xs uppercase tracking-wider text-ink-200 mb-1">
-                    Voice
-                  </label>
-                  <select
-                    value={voiceIdx}
-                    onChange={(e) => setVoiceIdx(Number(e.target.value))}
-                    className="w-full h-10 bg-ink-900 border border-ink-600 rounded-lg px-3 text-sm focus:outline-none focus:border-neon-blue"
-                  >
-                    {voices.map((v, i) => (
-                      <option key={`${v.name}-${i}`} value={i}>
-                        {v.name} — {v.lang}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
               <div className="mt-4 flex flex-wrap gap-2">
                 <button
                   onClick={generate}
@@ -335,9 +274,9 @@ export function PrankPage() {
               <h2>How the Prank Call Generator works</h2>
               <p>
                 You pick a scenario, personalize the name and topic, and the
-                site uses your browser's speech engine to read the script out
-                loud. Nothing gets dialed. Nothing gets mass-texted. You share
-                the link and your friend presses play on their own device.
+                site runs a prewritten, human-style conversation script in a
+                timed chat format. Nothing gets dialed. Nothing gets mass-texted.
+                You share the link and your friend watches the script play out.
               </p>
               <h2>Why not real phone calls?</h2>
               <p>

@@ -16,14 +16,96 @@ import { cx } from "../lib/utils";
 export function TokensPage() {
   const [w, setW] = useState<Wallet>(() => tokens.get());
   const [toast, setToast] = useState<string | null>(null);
+  const [busyKey, setBusyKey] = useState<string | null>(null);
 
   useEffect(() => tokens.subscribe(setW), []);
 
-  const buy = (sku: string, amount: number, price: number) => {
-    track({ name: "tokens_checkout_click", params: { sku, amount, price } });
-    tokens.grantPack(sku, amount);
-    setToast(`Added ${amount} tokens (demo mode).`);
-    window.setTimeout(() => setToast(null), 2200);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const provider = params.get("provider");
+    const stripeSession = params.get("session_id");
+    const paypalOrder = params.get("token");
+    if (provider !== "stripe" && provider !== "paypal") return;
+    if (provider === "stripe" && !stripeSession) return;
+    if (provider === "paypal" && !paypalOrder) return;
+    const run = async () => {
+      try {
+        const res = await fetch("/api/confirm-purchase", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            provider,
+            sessionId: stripeSession ?? undefined,
+            orderId: paypalOrder ?? undefined,
+          }),
+        });
+        const data = (await res.json()) as {
+          ok?: boolean;
+          receiptId?: string;
+          sku?: string;
+          tokens?: number;
+          error?: string;
+        };
+        if (!res.ok || !data.ok || !data.receiptId || !data.sku || !data.tokens) {
+          throw new Error(data.error || "Payment verification failed.");
+        }
+        const granted = tokens.grantPackFromReceipt(
+          data.sku,
+          data.tokens,
+          data.receiptId
+        );
+        if (granted.granted) {
+          setToast(`Payment confirmed. Added ${data.tokens} tokens.`);
+        } else {
+          setToast("This payment was already redeemed.");
+        }
+        track({
+          name: "tokens_checkout_confirmed",
+          params: { provider, sku: data.sku, tokens: data.tokens },
+        });
+      } catch (error) {
+        setToast(error instanceof Error ? error.message : "Checkout confirmation failed.");
+      } finally {
+        window.setTimeout(() => setToast(null), 3000);
+        const clean = new URL(window.location.href);
+        clean.searchParams.delete("provider");
+        clean.searchParams.delete("session_id");
+        clean.searchParams.delete("token");
+        clean.searchParams.delete("PayerID");
+        window.history.replaceState({}, "", clean.toString());
+      }
+    };
+    void run();
+  }, []);
+
+  const buy = async (
+    provider: "stripe" | "paypal",
+    sku: string,
+    amount: number,
+    price: number
+  ) => {
+    const key = `${provider}:${sku}`;
+    setBusyKey(key);
+    try {
+      track({
+        name: "tokens_checkout_click",
+        params: { provider, sku, amount, price },
+      });
+      const res = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ provider, sku }),
+      });
+      const data = (await res.json()) as { checkoutUrl?: string; error?: string };
+      if (!res.ok || !data.checkoutUrl) {
+        throw new Error(data.error || "Failed to start checkout.");
+      }
+      window.location.href = data.checkoutUrl;
+    } catch (error) {
+      setToast(error instanceof Error ? error.message : "Checkout failed.");
+      window.setTimeout(() => setToast(null), 3000);
+      setBusyKey(null);
+    }
   };
 
   return (
@@ -89,17 +171,27 @@ export function TokensPage() {
               </div>
               <div className="text-xs text-ink-200">tokens</div>
               <div className="mt-3 text-xl font-semibold">${p.priceUsd.toFixed(2)}</div>
-              <button
-                onClick={() => buy(p.sku, p.tokens, p.priceUsd)}
-                className={cx(
-                  "mt-4 h-10 rounded-lg font-semibold text-sm",
-                  p.popular
-                    ? "bg-neon-red text-white"
-                    : "bg-ink-700 hover:bg-ink-600"
-                )}
-              >
-                Grant (demo)
-              </button>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => buy("stripe", p.sku, p.tokens, p.priceUsd)}
+                  disabled={busyKey !== null}
+                  className={cx(
+                    "h-10 rounded-lg font-semibold text-xs disabled:opacity-50",
+                    p.popular
+                      ? "bg-neon-red text-white"
+                      : "bg-ink-700 hover:bg-ink-600"
+                  )}
+                >
+                  {busyKey === `stripe:${p.sku}` ? "Opening..." : "Buy with Stripe"}
+                </button>
+                <button
+                  onClick={() => buy("paypal", p.sku, p.tokens, p.priceUsd)}
+                  disabled={busyKey !== null}
+                  className="h-10 rounded-lg font-semibold text-xs bg-neon-blue text-ink-950 disabled:opacity-50"
+                >
+                  {busyKey === `paypal:${p.sku}` ? "Opening..." : "Buy with PayPal"}
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -157,11 +249,9 @@ export function TokensPage() {
           </ul>
 
           <div className="mt-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm">
-            <strong className="text-amber-200">Heads up:</strong> The checkout
-            above runs in <em>demo mode</em> and credits tokens locally to your
-            browser only. To wire up real payments, add Stripe (or another
-            processor) keys and swap the grant handler for a real checkout
-            session. Instructions are in the README.
+            <strong className="text-amber-200">Heads up:</strong> Token grants
+            are only applied after server-side payment verification from Stripe
+            or PayPal.
           </div>
 
           <div className="mt-6 flex gap-3 flex-wrap">

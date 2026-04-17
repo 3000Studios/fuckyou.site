@@ -10,6 +10,7 @@ export type Wallet = {
   lifetimeEarned: number;
   lifetimeSpent: number;
   purchases: { sku: string; amount: number; atISO: string }[];
+  receiptIds: string[];
 };
 
 type Listener = (w: Wallet) => void;
@@ -27,6 +28,7 @@ function emptyWallet(): Wallet {
     lifetimeEarned: DAILY_FREE,
     lifetimeSpent: 0,
     purchases: [],
+    receiptIds: [],
   };
 }
 
@@ -61,6 +63,7 @@ function load(): Wallet {
       lifetimeEarned: parsed.lifetimeEarned ?? 0,
       lifetimeSpent: parsed.lifetimeSpent ?? 0,
       purchases: Array.isArray(parsed.purchases) ? parsed.purchases : [],
+      receiptIds: Array.isArray(parsed.receiptIds) ? parsed.receiptIds : [],
     };
     return refillIfNeeded(w);
   } catch {
@@ -147,10 +150,38 @@ export const tokens = {
         ...w.purchases,
         { sku, amount, atISO: new Date().toISOString() },
       ],
+      receiptIds: w.receiptIds,
     };
     save(next);
     track({ name: "tokens_purchase", params: { sku, amount } });
     return next;
+  },
+
+  grantPackFromReceipt(
+    sku: string,
+    amount: number,
+    receiptId: string
+  ): { wallet: Wallet; granted: boolean } {
+    const w = tokens.get();
+    if (w.receiptIds.includes(receiptId)) {
+      return { wallet: w, granted: false };
+    }
+    const next: Wallet = {
+      ...w,
+      balance: clamp(w.balance + amount, 0, MAX_BALANCE),
+      lifetimeEarned: w.lifetimeEarned + amount,
+      purchases: [
+        ...w.purchases,
+        { sku, amount, atISO: new Date().toISOString() },
+      ],
+      receiptIds: [...w.receiptIds, receiptId],
+    };
+    save(next);
+    track({
+      name: "tokens_purchase_verified",
+      params: { sku, amount, receiptId },
+    });
+    return { wallet: next, granted: true };
   },
 
   reset(): Wallet {

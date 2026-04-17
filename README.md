@@ -97,6 +97,13 @@ Set locally in `.env`, and in Cloudflare for production (Pages → your project 
 
 If `VITE_GOOGLE_ADSENSE_ID` is not set or is still the placeholder, ad slots render as styled placeholders (useful in dev).
 
+For token checkout verification (server-side Pages Functions), also set these in **Pages → Settings → Environment Variables**:
+
+- `STRIPE_SECRET_KEY` (required for Stripe checkout)
+- `PAYPAL_CLIENT_ID` + `PAYPAL_CLIENT_SECRET` (required for PayPal checkout)
+- `PAYPAL_ENV` = `live` (or `sandbox` for testing)
+- `SITE_URL` = `https://fuckyou.site`
+
 ## Deploying to Cloudflare Pages
 
 The domain `fuckyou.site` is already on Cloudflare nameservers (via Namecheap). These steps connect a Pages project to that domain.
