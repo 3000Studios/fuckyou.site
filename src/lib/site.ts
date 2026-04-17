@@ -17,11 +17,10 @@ export const SITE = {
 export const NAV: { label: string; to: string }[] = [
   { label: "Home", to: "/" },
   { label: "Rants", to: "/blog" },
-  { label: "Work", to: "/category/work" },
-  { label: "Life", to: "/category/life" },
-  { label: "Tech", to: "/category/tech" },
-  { label: "Money", to: "/category/money" },
-  { label: "About", to: "/about" },
+  { label: "Outrage", to: "/outrage" },
+  { label: "Roast", to: "/roast" },
+  { label: "Prank", to: "/prank" },
+  { label: "Tokens", to: "/tokens" },
 ];
 
 export const FOOTER_LINKS: { label: string; to: string }[] = [

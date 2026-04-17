@@ -2,6 +2,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { NAV, SITE } from "../lib/site";
 import { cx } from "../lib/utils";
+import { TokenBadge } from "./TokenBadge";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -62,12 +63,9 @@ export function Header() {
                 {item.label}
               </NavLink>
             ))}
-            <Link
-              to="/contact"
-              className="ml-2 px-3 py-2 rounded-md text-sm font-semibold bg-neon-red text-white hover:bg-neon-red/90 transition-colors"
-            >
-              Send Us a Rant
-            </Link>
+            <div className="ml-2">
+              <TokenBadge />
+            </div>
           </nav>
 
           <button
@@ -121,12 +119,9 @@ export function Header() {
               {item.label}
             </NavLink>
           ))}
-          <Link
-            to="/contact"
-            className="mt-1 px-3 py-2 rounded-md text-sm font-semibold bg-neon-red text-white text-center"
-          >
-            Send Us a Rant
-          </Link>
+          <div className="mt-2 px-3 py-2">
+            <TokenBadge />
+          </div>
         </nav>
       </div>
     </header>

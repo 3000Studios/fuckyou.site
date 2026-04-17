@@ -8,6 +8,7 @@ import { Seo } from "../components/Seo";
 import { SITE } from "../lib/site";
 import { featured, latest, trending } from "../data/articles";
 import { CATEGORIES } from "../data/categories";
+import { latestOutrage } from "../data/outrage";
 
 export function HomePage() {
   const top = featured();
@@ -25,6 +26,59 @@ export function HomePage() {
         type="website"
       />
       <Hero />
+
+      <section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10"
+        aria-labelledby="games-heading"
+      >
+        <div className="flex items-end justify-between gap-4 mb-5">
+          <div>
+            <h2
+              id="games-heading"
+              className="font-display text-2xl sm:text-3xl font-bold text-white"
+            >
+              Vent, but interactive
+            </h2>
+            <p className="text-sm text-ink-200">
+              Three tiny machines of chaos. Play for free, keep playing with
+              tokens.
+            </p>
+          </div>
+          <Link
+            to="/tokens"
+            className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-neon-amber hover:text-white"
+          >
+            How tokens work →
+          </Link>
+        </div>
+
+        <div className="grid sm:grid-cols-3 gap-4">
+          <FeatureTile
+            to="/roast"
+            kicker="Roast Game"
+            title="Roast Me"
+            body="AI-driven roast battle with a cartoon avatar that gets angrier the meaner you get. Voice input optional."
+            accent="from-neon-red/30 via-ink-900 to-ink-900"
+            emoji="😤"
+          />
+          <FeatureTile
+            to="/prank"
+            kicker="Prank Call"
+            title="Prank Generator"
+            body="Pick a scenario, personalize the details, generate a goofy fake-call audio script to share with your friends."
+            accent="from-neon-blue/25 via-ink-900 to-ink-900"
+            emoji="📞"
+          />
+          <FeatureTile
+            to="/outrage"
+            kicker="News"
+            title="Outrage Feed"
+            body="A rolling list of the small, stupid, daily things that ruin your mood. Updated hourly."
+            accent="from-amber-500/30 via-ink-900 to-ink-900"
+            emoji="🗞️"
+          />
+        </div>
+      </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <AdSlot slot="home-top-banner" format="horizontal" minHeight={90} />
@@ -206,9 +260,96 @@ export function HomePage() {
         </div>
       </section>
 
+      <section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10"
+        aria-labelledby="outrage-heading"
+      >
+        <div className="flex items-end justify-between gap-4 mb-5">
+          <div>
+            <h2
+              id="outrage-heading"
+              className="font-display text-2xl sm:text-3xl font-bold text-white"
+            >
+              Fresh outrage
+            </h2>
+            <p className="text-sm text-ink-200">
+              The latest small thing ruining everyone's day.
+            </p>
+          </div>
+          <Link
+            to="/outrage"
+            className="text-sm font-semibold text-neon-red hover:text-white"
+          >
+            See the feed →
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {latestOutrage(6).map((o) => (
+            <Link
+              key={o.slug}
+              to={`/outrage/${o.slug}`}
+              className="group block rounded-2xl overflow-hidden border border-ink-600 hover:border-neon-red/60 bg-ink-800/60"
+            >
+              <div
+                className={`p-5 bg-gradient-to-br ${o.gradient} min-h-[140px] relative`}
+              >
+                <span className="absolute top-4 right-4 text-3xl" aria-hidden>
+                  {o.emoji}
+                </span>
+                <p className="text-[11px] uppercase tracking-[0.3em] text-ink-100">
+                  {o.kicker}
+                </p>
+                <h3 className="mt-2 font-display text-lg font-bold leading-snug group-hover:text-neon-red transition">
+                  {o.title}
+                </h3>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <AdSlot slot="home-bottom" format="auto" minHeight={280} />
       </section>
     </>
+  );
+}
+
+function FeatureTile({
+  to,
+  kicker,
+  title,
+  body,
+  accent,
+  emoji,
+}: {
+  to: string;
+  kicker: string;
+  title: string;
+  body: string;
+  accent: string;
+  emoji: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className={`group block rounded-2xl overflow-hidden border border-ink-600 bg-gradient-to-br ${accent} p-5 hover:border-neon-red/60 transition`}
+    >
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] uppercase tracking-[0.3em] text-ink-100">
+          {kicker}
+        </p>
+        <span className="text-3xl" aria-hidden>
+          {emoji}
+        </span>
+      </div>
+      <h3 className="mt-3 font-display text-2xl font-bold leading-tight group-hover:text-neon-red transition">
+        {title}
+      </h3>
+      <p className="mt-2 text-sm text-ink-100">{body}</p>
+      <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-neon-blue group-hover:text-white">
+        Play now →
+      </span>
+    </Link>
   );
 }

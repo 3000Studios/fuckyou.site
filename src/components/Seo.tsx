@@ -11,6 +11,7 @@ type Props = {
   type?: "website" | "article";
   article?: Article;
   noindex?: boolean;
+  keywords?: string[];
 };
 
 export function Seo({
@@ -21,6 +22,7 @@ export function Seo({
   type = "website",
   article,
   noindex,
+  keywords,
 }: Props) {
   const fullTitle =
     title === SITE.name ? title : `${title} — ${SITE.name}`;
@@ -71,6 +73,9 @@ export function Seo({
     <Helmet prioritizeSeoTags>
       <title>{fullTitle}</title>
       <meta name="description" content={desc} />
+      {keywords && keywords.length > 0 && (
+        <meta name="keywords" content={keywords.join(", ")} />
+      )}
       {noindex ? (
         <meta name="robots" content="noindex,nofollow" />
       ) : (

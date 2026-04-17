@@ -52,6 +52,25 @@ function extractArticles() {
   return articles;
 }
 
+function extractOutrage() {
+  const src = read("src/data/outrage.ts");
+  const entries = [];
+  const slugRx = /slug:\s*"([^"]+)"/g;
+  const dateRx = /publishedAt:\s*"([^"]+)"/g;
+  const slugs = [];
+  const dates = [];
+  let m;
+  while ((m = slugRx.exec(src))) slugs.push(m[1]);
+  while ((m = dateRx.exec(src))) dates.push(m[1]);
+  for (let i = 0; i < slugs.length; i += 1) {
+    entries.push({
+      slug: slugs[i],
+      published: dates[i] || new Date().toISOString(),
+    });
+  }
+  return entries;
+}
+
 function urlEntry(loc, lastmod, changefreq, priority) {
   return `  <url>
     <loc>${loc}</loc>
@@ -65,10 +84,15 @@ function build() {
   const today = new Date().toISOString().slice(0, 10);
   const cats = extractCategories();
   const articles = extractArticles();
+  const outrage = extractOutrage();
 
   const urls = [];
   urls.push(urlEntry(`${SITE_URL}/`, today, "daily", 1.0));
   urls.push(urlEntry(`${SITE_URL}/blog`, today, "daily", 0.9));
+  urls.push(urlEntry(`${SITE_URL}/outrage`, today, "hourly", 0.95));
+  urls.push(urlEntry(`${SITE_URL}/roast`, today, "weekly", 0.8));
+  urls.push(urlEntry(`${SITE_URL}/prank`, today, "weekly", 0.8));
+  urls.push(urlEntry(`${SITE_URL}/tokens`, today, "monthly", 0.6));
   for (const c of cats) {
     urls.push(
       urlEntry(`${SITE_URL}/category/${c}`, today, "daily", 0.8)
@@ -81,6 +105,16 @@ function build() {
         a.updated,
         "weekly",
         0.8
+      )
+    );
+  }
+  for (const o of outrage) {
+    urls.push(
+      urlEntry(
+        `${SITE_URL}/outrage/${o.slug}`,
+        o.published.slice(0, 10),
+        "hourly",
+        0.85
       )
     );
   }

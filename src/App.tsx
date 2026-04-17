@@ -11,6 +11,11 @@ import { PrivacyPage } from "./pages/PrivacyPage";
 import { TermsPage } from "./pages/TermsPage";
 import { DisclaimerPage } from "./pages/DisclaimerPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { RoastPage } from "./pages/RoastPage";
+import { PrankPage } from "./pages/PrankPage";
+import { OutragePage } from "./pages/OutragePage";
+import { OutrageStoryPage } from "./pages/OutrageStoryPage";
+import { TokensPage } from "./pages/TokensPage";
 import { track } from "./lib/analytics";
 
 export default function App() {
@@ -34,6 +39,11 @@ export default function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
         <Route path="/article/:slug" element={<ArticlePage />} />
+        <Route path="/roast" element={<RoastPage />} />
+        <Route path="/prank" element={<PrankPage />} />
+        <Route path="/outrage" element={<OutragePage />} />
+        <Route path="/outrage/:slug" element={<OutrageStoryPage />} />
+        <Route path="/tokens" element={<TokensPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />

@@ -12,8 +12,14 @@
 
 A production-ready, static-first React site optimized for:
 
-- **Revenue**: Google AdSense (auto ads + manual slots), Amazon/affiliate blocks, email capture, sticky mobile ad, exit-intent signup.
-- **SEO**: per-page meta, Open Graph, Twitter cards, JSON-LD `Article` schema, canonical URLs, auto-generated `sitemap.xml`, `robots.txt`, keyword-friendly URLs, semantic HTML.
+- **Revenue**: Google AdSense (auto ads + manual slots), Amazon/affiliate blocks, email capture, sticky mobile ad, exit-intent signup, plus token-gated games.
+- **Engagement features**:
+  - `/roast` — AI roast battle with cartoon animated avatar, voice input, 5 escalation tiers.
+  - `/prank` — Prank call generator (parody-safe, no outbound dialing) with personalizable scripts and TTS playback.
+  - `/outrage` — Hourly-refreshed "news that'll piss you off" feed with dedicated article pages and embedded video coverage.
+  - `/tokens` — Token economy (10 free daily, optional paid packs) powering the games.
+- **SEO**: per-page meta, Open Graph, Twitter cards, JSON-LD `Article` schema, canonical URLs, auto-generated `sitemap.xml` (includes hourly outrage stories), `robots.txt`, keyword-friendly URLs, semantic HTML.
+- **CI/CD**: GitHub Actions auto-deploys to Cloudflare Pages on every push to `main`. A separate cron workflow appends a fresh outrage story to the feed every hour and the resulting commit triggers a redeploy.
 - **Speed**: Vite build, code-split chunks, lazy rendering with `framer-motion`'s viewport-triggered animations, aggressive caching headers via Cloudflare Pages `_headers`.
 - **Mobile first**: sticky header, sticky mobile ad, exit-intent that also fires on engaged-mobile sessions, tap targets, readable contrast.
 - **Polish**: bold modern dark UI, neon red/blue accent system, subtle gradients, accessible focus states.
@@ -41,8 +47,12 @@ A production-ready, static-first React site optimized for:
 │   ├── robots.txt              # regenerated during build
 │   ├── favicon.svg
 │   └── og.svg
+├── .github/workflows/
+│   ├── deploy.yml              # auto-deploy to Cloudflare Pages on every push
+│   └── hourly-outrage.yml      # cron: hourly appends a new story + commits + redeploys
 ├── scripts/
-│   └── generate-sitemap.mjs    # writes dist/sitemap.xml + dist/robots.txt
+│   ├── generate-sitemap.mjs    # writes dist/sitemap.xml + dist/robots.txt
+│   └── generate-outrage-story.mjs  # appends one new outrage story to src/data/outrage.ts
 ├── src/
 │   ├── App.tsx
 │   ├── main.tsx
@@ -51,9 +61,10 @@ A production-ready, static-first React site optimized for:
 │   │   ├── articles/           # one full article per file
 │   │   ├── articles.ts         # aggregator + helpers
 │   │   ├── categories.ts
+│   │   ├── outrage.ts          # outrage-news stories (auto-appended hourly)
 │   │   └── types.ts
-│   ├── lib/                    # site config, adsense, analytics, utils
-│   ├── pages/                  # route components (Home, Blog, Article, ...)
+│   ├── lib/                    # site config, adsense, analytics, tokens, roasts, pranks
+│   ├── pages/                  # HomePage, BlogPage, RoastPage, PrankPage, OutragePage, etc.
 │   └── styles/globals.css
 └── tsconfig.json
 ```
@@ -139,15 +150,37 @@ Cloudflare dashboard → **Pages → fuckyou-site → Custom domains → Set up 
 
 Your site is now live at **https://fuckyou.site**.
 
-### Continuous deployment (optional)
+### Continuous deployment (already wired up)
 
-If you connect a Git repo in Cloudflare dashboard → **Pages → fuckyou-site → Settings → Build & deployments**, use:
+The repo at <https://github.com/3000Studios/fuckyou.site> is set up with two GitHub Actions workflows:
 
-- **Build command**: `npm run build`
-- **Build output directory**: `dist`
-- **Node version**: `20` or later (set in "Environment variables" as `NODE_VERSION=20`)
+- **`.github/workflows/deploy.yml`** — on every push to `main` and on `workflow_dispatch`, installs deps, builds, and runs `wrangler pages deploy dist` against the `fuckyou-site` project.
+- **`.github/workflows/hourly-outrage.yml`** — on a cron (`3 * * * *`) and on-demand, runs `scripts/generate-outrage-story.mjs` to append a new story to `src/data/outrage.ts`, commits it as the `fuckyou.site bot`, and pushes. That push then triggers the deploy workflow.
 
-Every push to `main` then deploys automatically.
+Required repo secrets (already set):
+
+- `CLOUDFLARE_API_TOKEN` — scoped to `Pages: Edit` for this account only.
+- `CLOUDFLARE_ACCOUNT_ID` — the numeric account id.
+
+Optional repo **variables** (set under *Settings → Secrets and variables → Actions → Variables*, not Secrets):
+
+- `VITE_SITE_URL` (defaults to `https://fuckyou.site`)
+- `VITE_CONTACT_EMAIL`
+- `VITE_GOOGLE_ADSENSE_ID` — once AdSense is approved
+- `VITE_GA_MEASUREMENT_ID` — for Google Analytics
+
+So the end-to-end flow is: `git push` → GitHub Action → `wrangler pages deploy` → live on `https://fuckyou.site` in ~1 min.
+
+### Token-gated games
+
+- **Roast Game** (`/roast`) — `src/pages/RoastPage.tsx`, `src/lib/roasts.ts`, `src/components/AngryAvatar.tsx`. Uses the Web Speech API for voice input and `SpeechSynthesisUtterance` for the bot's voice. Fully client-side — zero backend.
+- **Prank Call Generator** (`/prank`) — `src/pages/PrankPage.tsx`, `src/lib/pranks.ts`. Scripts are pure TypeScript templates; playback is browser TTS. Sharing uses query-string state so the recipient gets the same personalized script. No phones are dialed.
+- **Token wallet** — `src/lib/tokens.ts`, `src/components/TokenBadge.tsx`. Balance and purchases stored in `localStorage` under `fys_wallet_v1`, with 10 free tokens refilled daily. The pricing grid on `/tokens` currently *grants* tokens locally for demo purposes.
+- **Wiring real payments**: swap the `buy()` handler in `src/pages/TokensPage.tsx` for a Stripe Checkout redirect. Minimum pieces you need:
+  1. A Stripe account + a Checkout Session endpoint (Cloudflare Workers works great — `POST /api/checkout`).
+  2. After a successful webhook, sign a short-lived JWT and redirect back to `/tokens?grant=<jwt>`.
+  3. Replace `tokens.grantPack(sku, amount)` with a call that verifies the JWT against a Worker endpoint before granting.
+- **Hourly outrage feed** — `src/data/outrage.ts` holds the static seed stories; `scripts/generate-outrage-story.mjs` appends new ones. The story schema (`OutrageStory`) is pure TypeScript, so the whole feed remains type-safe even after hundreds of auto-appended entries. Each story renders at `/outrage/<slug>` with embedded YouTube video search coverage.
 
 ## Google AdSense setup
 
