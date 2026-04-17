@@ -16,10 +16,10 @@ A production-ready, static-first React site optimized for:
 - **Engagement features**:
   - `/roast` — AI roast battle with cartoon animated avatar, voice input, 5 escalation tiers.
   - `/prank` — Prank call generator (parody-safe, no outbound dialing) with personalizable scripts and TTS playback.
-  - `/outrage` — Hourly-refreshed "news that'll piss you off" feed with dedicated article pages and embedded video coverage.
+  - `/outrage` — "news that'll piss you off" feed with dedicated article pages and embedded video coverage.
   - `/tokens` — Token economy (10 free daily, optional paid packs) powering the games.
-- **SEO**: per-page meta, Open Graph, Twitter cards, JSON-LD `Article` schema, canonical URLs, auto-generated `sitemap.xml` (includes hourly outrage stories), `robots.txt`, keyword-friendly URLs, semantic HTML.
-- **CI/CD (Cloudflare-only, no GitHub Actions)**: a local `pre-push` git hook runs `scripts/deploy.mjs` which builds and `wrangler pages deploy`s to `fuckyou.site` on every push. A Cloudflare Worker with a Cron Trigger (`workers/outrage-cron`) commits a fresh outrage story to the repo every hour.
+- **SEO**: per-page meta, Open Graph, Twitter cards, JSON-LD `Article` schema, canonical URLs, auto-generated `sitemap.xml`, `robots.txt`, keyword-friendly URLs, semantic HTML.
+- **CI/CD (Cloudflare + Wrangler only, no GitHub Actions)**: a local `pre-push` git hook runs `scripts/deploy.mjs` which builds and `wrangler pages deploy`s to `fuckyou.site` on every push. One repo, one branch (`main`), one Cloudflare resource (the Pages project). That's it.
 - **Speed**: Vite build, code-split chunks, lazy rendering with `framer-motion`'s viewport-triggered animations, aggressive caching headers via Cloudflare Pages `_headers`.
 - **Mobile first**: sticky header, sticky mobile ad, exit-intent that also fires on engaged-mobile sessions, tap targets, readable contrast.
 - **Polish**: bold modern dark UI, neon red/blue accent system, subtle gradients, accessible focus states.
@@ -50,16 +50,9 @@ A production-ready, static-first React site optimized for:
 ├── .githooks/
 │   ├── pre-push                # runs scripts/deploy.mjs on git push
 │   └── post-commit             # optional per-commit deploy (opt-in with DEPLOY_ON_COMMIT=1)
-├── workers/
-│   └── outrage-cron/           # Cloudflare Worker Cron Trigger (hourly)
-│       ├── src/index.ts        # cron handler + HTTP /run endpoint
-│       ├── src/story.ts        # story generator (pure JS)
-│       ├── deploy.mjs          # direct-API deploy (bypasses wrangler rate limits)
-│       └── wrangler.toml       # worker config (cron = "3 * * * *")
 ├── scripts/
 │   ├── deploy.mjs              # builds + wrangler pages deploy to production
-│   ├── generate-sitemap.mjs    # writes dist/sitemap.xml + dist/robots.txt
-│   └── generate-outrage-story.mjs  # local version (used for one-off manual runs)
+│   └── generate-sitemap.mjs    # writes dist/sitemap.xml + dist/robots.txt
 ├── src/
 │   ├── App.tsx
 │   ├── main.tsx
@@ -157,9 +150,9 @@ Cloudflare dashboard → **Pages → fuckyou-site → Custom domains → Set up 
 
 Your site is now live at **https://fuckyou.site**.
 
-### Continuous deployment (Cloudflare + wrangler only, no GitHub Actions)
+### Continuous deployment (Cloudflare + Wrangler only, no GitHub Actions)
 
-This repo deploys exclusively via Cloudflare and Wrangler. **Every `git push` auto-deploys** to `https://fuckyou.site`, and a **Cloudflare Worker Cron Trigger** adds a fresh outrage story every hour.
+This repo deploys exclusively via Cloudflare and Wrangler. **Every `git push` auto-deploys** to `https://fuckyou.site`. One Cloudflare resource (the Pages project), one repo, one branch (`main`).
 
 #### One-time local setup
 
@@ -168,7 +161,7 @@ This repo deploys exclusively via Cloudflare and Wrangler. **Every `git push` au
 npm install
 
 # 2. Create .cloudflare-token (gitignored) with your Cloudflare creds:
-#    TOKEN=<your CF API token with Pages:Write + Workers Scripts:Write>
+#    TOKEN=<your CF API token with Pages:Write>
 #    ACCOUNT_ID=<your CF account id>
 
 # 3. Enable the git hooks
@@ -189,55 +182,13 @@ On Windows, Git for Windows bundles Bash and runs the hook scripts automatically
 
 Set `SKIP_DEPLOY=1` in the environment to skip the pre-push deploy for a single push (e.g. docs-only commits). Set `DEPLOY_ON_COMMIT=1` to also deploy on every commit via `.githooks/post-commit` (disabled by default—it can slow rebase/squash).
 
-#### Hourly outrage stories (Cloudflare Worker Cron)
-
-The Worker at `workers/outrage-cron/` is deployed on a Cron Trigger that fires every hour at `:03`. On each trigger it:
-
-1. Builds a new outrage story with the templated generator (`workers/outrage-cron/src/story.ts`).
-2. Uses the GitHub REST API to append it to `src/data/outrage.ts` and commit as `fuckyou.site bot <bot@fuckyou.site>`.
-3. Logs success to Workers tail.
-
-The next `git pull` + `git push` you make from your machine will bundle those committed stories into the next Pages deploy.
-
-To deploy the Worker:
-
-```bash
-cd workers/outrage-cron
-npm install
-# Requires CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, GITHUB_TOKEN (or `gh auth token`) in env.
-node deploy.mjs
-```
-
-Manual smoke test (replace `<key>` with the last 8 chars of the configured `GITHUB_TOKEN`):
-
-```bash
-curl -X POST "https://fuckyou-outrage-cron.<account>.workers.dev/run?key=<key>"
-```
-
-Secrets/env on the Worker (set automatically by `deploy.mjs`):
-
-| Binding                | Type         | Purpose                                        |
-| ---------------------- | ------------ | ---------------------------------------------- |
-| `GITHUB_TOKEN`         | secret       | Personal access token with `repo` scope        |
-| `CLOUDFLARE_API_TOKEN` | secret       | Used for optional Pages deploy fallback trigger |
-| `GITHUB_OWNER`         | plain text   | `3000Studios`                                  |
-| `GITHUB_REPO`          | plain text   | `fuckyou.site`                                 |
-| `GITHUB_BRANCH`        | plain text   | `main`                                         |
-| `GITHUB_FILE`          | plain text   | `src/data/outrage.ts`                          |
-| `GIT_AUTHOR_NAME`      | plain text   | `fuckyou.site bot`                             |
-| `GIT_AUTHOR_EMAIL`     | plain text   | `bot@fuckyou.site`                             |
-| `PAGES_PROJECT`        | plain text   | `fuckyou-site`                                 |
-
-View live logs with `npx wrangler@4 tail fuckyou-outrage-cron --format=pretty`.
-
 #### End-to-end flow
 
 ```
-you edit code          → git push → .githooks/pre-push → scripts/deploy.mjs → wrangler pages deploy → https://fuckyou.site
-Worker cron (hourly)   → GitHub API commit → next git pull + push  → wrangler pages deploy → live
+you edit code → git push → .githooks/pre-push → scripts/deploy.mjs → wrangler pages deploy → https://fuckyou.site
 ```
 
-No GitHub Actions. No CI billing. Everything runs on Cloudflare + your machine.
+No GitHub Actions. No CI billing. No extra Workers. One Cloudflare Pages project, one repo, one branch. Done.
 
 ### Token-gated games
 

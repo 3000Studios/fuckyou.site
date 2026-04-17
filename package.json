@@ -12,9 +12,7 @@
     "deploy": "node scripts/deploy.mjs",
     "deploy:skip-build": "node scripts/deploy.mjs --skip-build",
     "deploy:create": "wrangler pages project create fuckyou-site --production-branch=main",
-    "hooks:install": "git config core.hooksPath .githooks && git update-index --chmod=+x .githooks/pre-push .githooks/post-commit 2>nul || true",
-    "worker:deploy": "npm --prefix workers/outrage-cron run deploy",
-    "worker:dev": "npm --prefix workers/outrage-cron run dev"
+    "hooks:install": "git config core.hooksPath .githooks && git update-index --chmod=+x .githooks/pre-push .githooks/post-commit 2>nul || true"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",

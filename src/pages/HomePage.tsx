@@ -73,7 +73,7 @@ export function HomePage() {
             to="/outrage"
             kicker="News"
             title="Outrage Feed"
-            body="A rolling list of the small, stupid, daily things that ruin your mood. Updated hourly."
+            body="A rolling list of the small, stupid, daily things that ruin your mood. Curated rage."
             accent="from-amber-500/30 via-ink-900 to-ink-900"
             emoji="🗞️"
           />
