@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Optional: deploy immediately after every commit (not just on push).
+# Disabled by default because it can slow local commits. Enable with:
+#   export DEPLOY_ON_COMMIT=1
+set -e
+if [[ "${DEPLOY_ON_COMMIT:-0}" != "1" ]]; then
+  exit 0
+fi
+cd "$(git rev-parse --show-toplevel)"
+echo "[post-commit] DEPLOY_ON_COMMIT=1 → deploying to Cloudflare Pages..."
+node scripts/deploy.mjs
