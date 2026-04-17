@@ -19,6 +19,30 @@ export type OutrageStory = {
 
 export const OUTRAGE_STORIES: OutrageStory[] = [
   {
+    slug: "new-insurance-fee-announced-applies-retroactively-2026-04-17-2663",
+    title: "New insurance Fee Announced, Applies Retroactively",
+    description: "A $11 \"convenience\" fee has been added to things that were previously free, including existing transactions. Everyone is very chill about it.",
+    publishedAt: "2026-04-17T15:03:43.733Z",
+    emoji: "✈️",
+    gradient: "from-fuchsia-500/25 via-ink-900 to-ink-950",
+    kicker: "Travel",
+    source: { name: "Wire Report", url: "https://news.google.com" },
+    videoQuery: "hidden fees",
+    tags: ["travel", "junk-fees", "late-stage", "daily-rage"],
+    intro: "A company you already use just added a 11-dollar \"insurance adjustment\" fee to every transaction, retroactively. The press release calls it \"a more honest pricing moment.\" Customers call it \"a moral injury.\"",
+    takes: [
+      "The fee is listed as \"not a fee\" in the fine print, and \"a service enrichment\" in the email that announced it.",
+      "The FAQ insists the fee is \"optional,\" but the opt-out is hidden inside a phone tree voiced by a man who is clearly reading from a hostage note.",
+      "This is the tenth \"one-time\" fee this company has launched this year. The tenth one-time.",
+    ],
+    blame: [
+      "The consultant who brought this to a whiteboard and was not tackled in the parking lot.",
+      "The automated \"we value your business\" email that was sent to 14 million people 3 seconds after the announcement.",
+      "You, a little, for continuing to give them money.",
+    ],
+    conclusion: "No, you are not overreacting. Yes, it is cheaper to keep using them than to switch, and they know it. That's the whole business model. Breathe. Rage here. It's free.",
+  },
+  {
     slug: "grocery-bag-tax-is-back",
     title: "They Brought Back the Grocery Bag Tax and Nobody Voted on It",
     description:
