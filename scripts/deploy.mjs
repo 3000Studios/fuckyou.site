@@ -22,17 +22,43 @@ function log(tag, msg) {
   console.log(`[${stamp}] [${tag}] ${msg}`);
 }
 
-function loadLocalCreds() {
-  const path = resolve(ROOT, ".cloudflare-token");
-  if (!existsSync(path)) return {};
+function loadEnvFile(path) {
+  if (!path || !existsSync(path)) return {};
   const raw = readFileSync(path, "utf8");
   const out = {};
   for (const line of raw.split(/\r?\n/)) {
-    const m = line.match(/^\s*([A-Z_]+)\s*=\s*(.+?)\s*$/);
+    if (!line || /^\s*#/.test(line)) continue;
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
     if (!m) continue;
     out[m[1]] = m[2].replace(/^['"]|['"]$/g, "");
   }
   return out;
+}
+
+function mergeEnv(vars) {
+  for (const [k, v] of Object.entries(vars || {})) {
+    if (process.env[k] == null && v != null && String(v).length > 0) {
+      process.env[k] = String(v);
+    }
+  }
+}
+
+function tryLoadGlobalEnv() {
+  const explicit = process.env.CODEX_GLOBAL_ENV;
+  const home = process.env.USERPROFILE || process.env.HOME;
+  const fallback = home ? resolve(home, ".config", "env", "global.env") : null;
+  const path = explicit || fallback;
+  const vars = loadEnvFile(path);
+  if (Object.keys(vars).length > 0) {
+    log("env", `loaded ${Object.keys(vars).length} vars from ${path}`);
+    mergeEnv(vars);
+  }
+}
+
+function loadLocalCreds() {
+  const path = resolve(ROOT, ".cloudflare-token");
+  if (!existsSync(path)) return {};
+  return loadEnvFile(path);
 }
 
 function resolveCreds() {
@@ -40,16 +66,6 @@ function resolveCreds() {
   const token = process.env.CLOUDFLARE_API_TOKEN || local.TOKEN || local.CLOUDFLARE_API_TOKEN;
   const account =
     process.env.CLOUDFLARE_ACCOUNT_ID || local.ACCOUNT_ID || local.CLOUDFLARE_ACCOUNT_ID;
-  if (!token || !account) {
-    console.error(
-      "[deploy] Missing Cloudflare credentials.\n" +
-        "  Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in env,\n" +
-        "  or create .cloudflare-token at repo root with:\n" +
-        "    TOKEN=<api-token>\n" +
-        "    ACCOUNT_ID=<account-id>\n"
-    );
-    process.exit(2);
-  }
   return { token, account };
 }
 
@@ -67,6 +83,7 @@ function run(cmd, args, env) {
 }
 
 function main() {
+  tryLoadGlobalEnv();
   const skipBuild = process.argv.includes("--skip-build");
   const { token, account } = resolveCreds();
 
@@ -78,23 +95,23 @@ function main() {
   }
 
   log("deploy", `wrangler pages deploy → ${PROJECT} (branch=${BRANCH})`);
-  run(
-    "npx",
-    [
-      "--yes",
-      "wrangler@4",
-      "pages",
-      "deploy",
-      "dist",
-      `--project-name=${PROJECT}`,
-      `--branch=${BRANCH}`,
-      "--commit-dirty=true",
-    ],
-    {
-      CLOUDFLARE_API_TOKEN: token,
-      CLOUDFLARE_ACCOUNT_ID: account,
-    }
-  );
+  const args = [
+    "--yes",
+    "wrangler@4",
+    "pages",
+    "deploy",
+    "dist",
+    `--project-name=${PROJECT}`,
+    `--branch=${BRANCH}`,
+    "--commit-dirty=true",
+  ];
+
+  if (token && account) {
+    run("npx", args, { CLOUDFLARE_API_TOKEN: token, CLOUDFLARE_ACCOUNT_ID: account });
+  } else {
+    log("auth", "no CLOUDFLARE_* creds found; using wrangler OAuth login");
+    run("npx", args);
+  }
   log("deploy", "done → https://fuckyou.site");
 }
 
