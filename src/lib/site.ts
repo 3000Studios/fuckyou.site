@@ -18,6 +18,10 @@ export const NAV: { label: string; to: string }[] = [
   { label: "Home", to: "/" },
   { label: "Rants", to: "/blog" },
   { label: "Outrage", to: "/outrage" },
+  { label: "Videos", to: "/videos" },
+  { label: "Games", to: "/games" },
+  { label: "Subscribe", to: "/subscribe" },
+  { label: "Messages", to: "/messages" },
   { label: "Roast", to: "/roast" },
   { label: "Prank", to: "/prank" },
   { label: "Tokens", to: "/tokens" },
@@ -29,5 +33,6 @@ export const FOOTER_LINKS: { label: string; to: string }[] = [
   { label: "Privacy Policy", to: "/privacy" },
   { label: "Terms of Service", to: "/terms" },
   { label: "Disclaimer", to: "/disclaimer" },
+  { label: "Media Credits", to: "/credits" },
   { label: "Sitemap", to: "/sitemap.xml" },
 ];

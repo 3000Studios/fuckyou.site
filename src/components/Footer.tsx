@@ -2,11 +2,18 @@ import { Link } from "react-router-dom";
 import { FOOTER_LINKS, SITE, NAV } from "../lib/site";
 import { NewsletterForm } from "./NewsletterForm";
 import { CATEGORIES } from "../data/categories";
+import { Backdrop } from "./visual/Backdrop";
 
 export function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-ink-600/60 bg-ink-950 text-ink-100">
+    <footer className="relative border-t border-ink-600/60 bg-ink-950 text-ink-100 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0">
+        <Backdrop className="opacity-35" intensity={0.85} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_0%,rgba(255,42,85,0.18),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(41,216,255,0.14),transparent_60%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink-950/10 via-ink-950/60 to-ink-950" />
+      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Seo } from "../components/Seo";
 import { ArticleCard } from "../components/ArticleCard";
 import { CategoryPills } from "../components/CategoryPills";
@@ -82,6 +82,40 @@ export function BlogPage() {
           </div>
           <CategoryPills />
         </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-b border-ink-600/40">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h2 className="font-display text-2xl font-bold text-white">
+              Chronological index
+            </h2>
+            <p className="mt-1 text-sm text-ink-200">
+              Numbered, ordered, and always up to date.
+            </p>
+          </div>
+          <p className="text-xs text-ink-300">
+            Showing {results.length} item{results.length === 1 ? "" : "s"}
+          </p>
+        </div>
+
+        <ol className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-2">
+          {results.map((a, i) => (
+            <li key={a.slug}>
+              <Link
+                to={`/article/${a.slug}`}
+                className="group flex items-center gap-3 rounded-xl border border-ink-600 bg-ink-800/40 px-4 py-3 hover:border-neon-red/60 hover:shadow-glow transition-all"
+              >
+                <span className="font-mono text-xs text-ink-300 w-10 shrink-0">
+                  {(i + 1).toString().padStart(2, "0")}
+                </span>
+                <span className="text-sm font-semibold text-white group-hover:text-neon-amber transition-colors line-clamp-1">
+                  {a.title}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

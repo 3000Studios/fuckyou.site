@@ -204,6 +204,141 @@ export const OUTRAGE_STORIES: OutrageStory[] = [
     conclusion:
       "If you ever think, 'is it me?' — no. It is the machine. The machine has been out here for years, every day, making people feel insane, one banana at a time. Go home. Order delivery. Rage in peace.",
   },
+  {
+    slug: "airline-seat-selection-fee-now-fee-for-fee-2026-04-21-001",
+    title: "Airline Adds a Fee to Pay the Other Fee",
+    description:
+      "Seat selection has a fee. The fee has a fee. Somewhere, an accountant levitated.",
+    publishedAt: "2026-04-21T12:00:00Z",
+    emoji: "💺",
+    gradient: "from-neon-blue/25 via-ink-900 to-ink-950",
+    kicker: "Travel",
+    source: { name: "Wire Report", url: "https://news.google.com" },
+    videoQuery: "airline seat selection fees",
+    tags: ["travel", "junk-fees", "daily-rage"],
+    intro:
+      "A major airline has introduced a new “processing surcharge” for certain optional fees — including the fee you pay to choose a seat that is not in the airplane bathroom.",
+    takes: [
+      "It’s called a “surcharge” because “we’re taking your money again” tested poorly in focus groups.",
+      "The fee is avoidable if you don’t pick a seat, don’t bring a bag, don’t breathe, and don’t exist.",
+      "The email announcing it used the word “enhanced” three times. Enhanced for who.",
+    ],
+    blame: [
+      "The spreadsheet that decided your knees should be monetized.",
+      "The person who renamed “cost” to “value opportunity.”",
+      "The entire industry for turning transportation into a loot box.",
+    ],
+    conclusion:
+      "If you feel like you’re being nickel-and-dimed, it’s because you are. It’s not your imagination. It’s the business model. Rage responsibly. Hydrate.",
+  },
+  {
+    slug: "smart-fridge-needs-update-to-open-2026-04-21-002",
+    title: "Smart Fridge Requires a Firmware Update Before It Will Chill",
+    description:
+      "The fridge is online. Your groceries are not safe. The fridge is thinking about it.",
+    publishedAt: "2026-04-21T11:00:00Z",
+    emoji: "🧊",
+    gradient: "from-fuchsia-500/20 via-ink-900 to-ink-950",
+    kicker: "Tech",
+    source: { name: "Tech Daily", url: "https://news.google.com" },
+    videoQuery: "smart fridge update",
+    tags: ["tech", "iot", "daily-rage"],
+    intro:
+      "In a move no human asked for, a ‘smart’ refrigerator has begun prompting owners to install a firmware update — and allegedly delaying normal operation until the update completes.",
+    takes: [
+      "A fridge used to have one job. Now it has a roadmap.",
+      "It can display the weather, but it can’t display basic respect.",
+      "If your appliance needs an account, the appliance is not for you. It’s for whoever buys your data.",
+    ],
+    blame: [
+      "The product manager who looked at a fridge and saw ‘engagement.’",
+      "The investor deck that said “recurring revenue” over “cold milk.”",
+      "The update pop-up designer. There is a special place for you.",
+    ],
+    conclusion:
+      "A refrigerator should not have opinions, ads, or a software lifecycle. It should be cold. That’s it. The future is stupid. Please scream into a pillow.",
+  },
+  {
+    slug: "rent-payment-portal-down-on-payday-2026-04-21-003",
+    title: "Rent Payment Portal Goes Down Exactly on Payday, Again",
+    description:
+      "The portal is down. Late fees are up. Customer support is a poem written by an AI that hates you.",
+    publishedAt: "2026-04-21T10:00:00Z",
+    emoji: "🏢",
+    gradient: "from-amber-500/20 via-ink-900 to-ink-950",
+    kicker: "Money",
+    source: { name: "Housing Desk", url: "https://news.google.com" },
+    videoQuery: "rent portal down late fee",
+    tags: ["money", "rent", "daily-rage"],
+    intro:
+      "Residents across multiple buildings reported that their online rent portal became unavailable right when paychecks hit, with outages lasting long enough to trigger late fees for people who were actively trying to pay on time.",
+    takes: [
+      "They call it “maintenance.” It’s the kind of maintenance where only your stress gets maintained.",
+      "The late fee is instant. The portal fix is “within 3–5 business days.”",
+      "Paying rent shouldn’t require refreshing a webpage like you’re buying concert tickets.",
+    ],
+    blame: [
+      "The vendor who charges your landlord and still can’t keep a website up.",
+      "The fine print that says “outage does not excuse late payment.”",
+      "The concept of rent as a live-service game.",
+    ],
+    conclusion:
+      "If a system punishes you for doing the correct thing, it’s not a system — it’s a trap. Document everything. Screenshot the outage. Be annoying. It’s your money.",
+  },
+  {
+    slug: "coffee-order-app-asks-for-tip-before-coffee-2026-04-21-004",
+    title: "Coffee App Asks for a Tip Before It Has Even Made Coffee",
+    description:
+      "You have not received coffee. The app is already disappointed in you.",
+    publishedAt: "2026-04-21T09:00:00Z",
+    emoji: "☕",
+    gradient: "from-neon-red/20 via-ink-900 to-ink-950",
+    kicker: "Modern Life",
+    source: { name: "Retail Report", url: "https://news.google.com" },
+    videoQuery: "tipping screen before service",
+    tags: ["daily-rage", "tipping", "money"],
+    intro:
+      "A popular coffee ordering app is prompting customers to tip at checkout — before the drink is made, before it is correct, and before anyone has acknowledged your existence.",
+    takes: [
+      "The tip prompt is not a question. It’s a dare.",
+      "It’s not tipping. It’s pre-paying guilt.",
+      "The screen is angled so the barista can see your choice. This is a psychological experiment.",
+    ],
+    blame: [
+      "The owners who outsourced wages to vibes.",
+      "The interface that makes ‘No Tip’ feel like an act of violence.",
+      "All of us for accepting this for five straight years.",
+    ],
+    conclusion:
+      "Tip culture isn’t your fault, but your nerves are paying the interest. Tip when you want. Don’t when you don’t. The coffee should still be coffee.",
+  },
+  {
+    slug: "calendar-invites-accepted-by-default-2026-04-21-005",
+    title: "Calendar App Starts Accepting Invites for You Like It Owns Your Life",
+    description:
+      "You are now attending three meetings you never agreed to. Congratulations on your new job: Professional Availability.",
+    publishedAt: "2026-04-21T08:00:00Z",
+    emoji: "📅",
+    gradient: "from-neon-blue/20 via-ink-900 to-ink-950",
+    kicker: "Work",
+    source: { name: "Office Wire", url: "https://news.google.com" },
+    videoQuery: "calendar invite automatically accepted",
+    tags: ["work", "calendar", "tech", "daily-rage"],
+    intro:
+      "Users reported that an update to a popular calendar client appears to auto-add meeting invites more aggressively, turning tentative requests into full commitments without the human courtesy of asking.",
+    takes: [
+      "It’s not a calendar. It’s a leash with color-coding.",
+      "The decline button is now hidden behind a menu labeled “Maybe later.”",
+      "Every update makes your tools more confident and you less in control.",
+    ],
+    blame: [
+      "The update that confuses “helpful” with “authoritative.”",
+      "The meeting culture that treats your time like a public park.",
+      "The person who scheduled a 7:30am “sync.”",
+    ],
+    conclusion:
+      "Your calendar should not consent on your behalf. If it does, it’s broken. Turn off auto-add. Reclaim your mornings. Guard your hours like treasure.",
+  },
 ];
 
 export function sortOutrageNewest(a: OutrageStory, b: OutrageStory): number {

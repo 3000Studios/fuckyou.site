@@ -9,8 +9,25 @@ import { article as a7 } from "./articles/nothing-loads-in-a-hurry";
 import { article as a8 } from "./articles/silent-rage-slow-wifi";
 import { article as a9 } from "./articles/customer-service-boss-fight";
 import { article as a10 } from "./articles/things-that-ruin-your-mood";
+import { article as a11 } from "./articles/office-slack-meltdown";
+import { article as a12 } from "./articles/your-to-do-list-is-a-ponzi-scheme";
+import { article as a13 } from "./articles/the-gym-app-wants-your-location";
 
-export const ARTICLES: Article[] = [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10];
+export const ARTICLES: Article[] = [
+  a1,
+  a2,
+  a3,
+  a4,
+  a5,
+  a6,
+  a7,
+  a8,
+  a9,
+  a10,
+  a11,
+  a12,
+  a13,
+];
 
 export const ARTICLES_BY_SLUG: Record<string, Article> = ARTICLES.reduce(
   (acc, a) => {

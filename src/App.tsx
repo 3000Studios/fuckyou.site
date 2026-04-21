@@ -16,6 +16,11 @@ import { PrankPage } from "./pages/PrankPage";
 import { OutragePage } from "./pages/OutragePage";
 import { OutrageStoryPage } from "./pages/OutrageStoryPage";
 import { TokensPage } from "./pages/TokensPage";
+import { VideosPage } from "./pages/VideosPage";
+import { GamesPage } from "./pages/GamesPage";
+import { SubscribePage } from "./pages/SubscribePage";
+import { MessagesPage } from "./pages/MessagesPage";
+import { CreditsPage } from "./pages/CreditsPage";
 import { track } from "./lib/analytics";
 
 export default function App() {
@@ -39,6 +44,11 @@ export default function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
         <Route path="/article/:slug" element={<ArticlePage />} />
+        <Route path="/videos" element={<VideosPage />} />
+        <Route path="/games" element={<GamesPage />} />
+        <Route path="/subscribe" element={<SubscribePage />} />
+        <Route path="/messages" element={<MessagesPage />} />
+        <Route path="/credits" element={<CreditsPage />} />
         <Route path="/roast" element={<RoastPage />} />
         <Route path="/prank" element={<PrankPage />} />
         <Route path="/outrage" element={<OutragePage />} />

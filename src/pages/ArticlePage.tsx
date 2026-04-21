@@ -15,6 +15,8 @@ import { getCategory } from "../data/categories";
 import { formatDate, readingTime } from "../lib/utils";
 import { NotFoundPage } from "./NotFoundPage";
 import { SITE } from "../lib/site";
+import { AutoVideo } from "../components/media/AutoVideo";
+import { pickWallpaper } from "../lib/wallpaper";
 
 export function ArticlePage() {
   const { slug = "" } = useParams();
@@ -36,6 +38,8 @@ export function ArticlePage() {
       )
       .join(" ")
   );
+
+  const wallpaper = pickWallpaper(`article:${article.slug}`);
 
   return (
     <>
@@ -103,6 +107,21 @@ export function ArticlePage() {
               {article.hero.emoji}
             </span>
           </div>
+        </div>
+
+        <div className="mt-6">
+          <div className="flex items-center justify-between gap-4 mb-2">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-ink-200">
+              Auto-playing wallpaper video
+            </p>
+            <Link
+              to="/credits"
+              className="text-[11px] uppercase tracking-[0.22em] text-neon-blue hover:text-white font-semibold"
+            >
+              Credits
+            </Link>
+          </div>
+          <AutoVideo media={wallpaper} className="aspect-video" />
         </div>
 
         <div className="mt-6">

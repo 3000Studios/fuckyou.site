@@ -7,17 +7,15 @@ import {
   getRelatedOutrage,
 } from "../data/outrage";
 import { formatDate } from "../lib/utils";
+import { AutoVideo } from "../components/media/AutoVideo";
+import { pickWallpaper } from "../lib/wallpaper";
 
 export function OutrageStoryPage() {
   const { slug = "" } = useParams();
   const story = getOutrageStory(slug);
   if (!story) return <Navigate to="/outrage" replace />;
   const related = getRelatedOutrage(slug, 3);
-  const embedSrc = story.videoId
-    ? `https://www.youtube.com/embed/${story.videoId}`
-    : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(
-        story.videoQuery || story.title
-      )}`;
+  const wallpaper = pickWallpaper(`outrage:${story.slug}`);
 
   return (
     <>
@@ -72,15 +70,14 @@ export function OutrageStoryPage() {
         </div>
 
         <div className="aspect-video w-full rounded-2xl overflow-hidden bg-ink-800 border border-ink-600 mb-6">
-          <iframe
-            title={`Video coverage: ${story.title}`}
-            src={embedSrc}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            loading="lazy"
-            className="w-full h-full"
-          />
+          <AutoVideo media={wallpaper} className="h-full w-full" />
         </div>
+        <p className="mt-2 mb-6 text-xs text-ink-200">
+          Wallpaper credit:{" "}
+          <Link to="/credits" className="underline hover:text-white">
+            Media Credits
+          </Link>
+        </p>
 
         <div className="prose prose-invert prose-rant max-w-none">
           <p className="text-lg leading-relaxed">{story.intro}</p>

@@ -90,6 +90,11 @@ function build() {
   urls.push(urlEntry(`${SITE_URL}/`, today, "daily", 1.0));
   urls.push(urlEntry(`${SITE_URL}/blog`, today, "daily", 0.9));
   urls.push(urlEntry(`${SITE_URL}/outrage`, today, "hourly", 0.95));
+  urls.push(urlEntry(`${SITE_URL}/videos`, today, "weekly", 0.8));
+  urls.push(urlEntry(`${SITE_URL}/games`, today, "weekly", 0.8));
+  urls.push(urlEntry(`${SITE_URL}/subscribe`, today, "monthly", 0.6));
+  urls.push(urlEntry(`${SITE_URL}/messages`, today, "hourly", 0.7));
+  urls.push(urlEntry(`${SITE_URL}/credits`, today, "yearly", 0.3));
   urls.push(urlEntry(`${SITE_URL}/roast`, today, "weekly", 0.8));
   urls.push(urlEntry(`${SITE_URL}/prank`, today, "weekly", 0.8));
   urls.push(urlEntry(`${SITE_URL}/tokens`, today, "monthly", 0.6));
