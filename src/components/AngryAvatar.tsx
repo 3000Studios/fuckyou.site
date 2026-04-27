@@ -12,6 +12,9 @@ const HUES: Record<RoastTier, string> = {
   2: "#f28a5b",
   3: "#e04b3a",
   4: "#9b1f2a",
+  5: "#7a1220",
+  6: "#2b0a10",
+  7: "#0a0a0a",
 };
 
 const EYE_WHITES: Record<RoastTier, string> = {
@@ -20,6 +23,9 @@ const EYE_WHITES: Record<RoastTier, string> = {
   2: "#fff3c4",
   3: "#fde1b0",
   4: "#f7baba",
+  5: "#f2b2b2",
+  6: "#f0e7ff",
+  7: "#e6f7ff",
 };
 
 export function AngryAvatar({ tier, speaking }: Props) {

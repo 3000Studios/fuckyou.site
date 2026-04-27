@@ -1,4 +1,4 @@
-export type RoastTier = 0 | 1 | 2 | 3 | 4;
+export type RoastTier = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export const TIER_LABELS: Record<RoastTier, string> = {
   0: "Mildly Annoyed",
@@ -6,6 +6,9 @@ export const TIER_LABELS: Record<RoastTier, string> = {
   2: "Actually Mean",
   3: "Unhinged",
   4: "Apocalyptic",
+  5: "Nuclear",
+  6: "Cosmic",
+  7: "Singularity",
 };
 
 export const TIER_COLORS: Record<RoastTier, string> = {
@@ -14,6 +17,9 @@ export const TIER_COLORS: Record<RoastTier, string> = {
   2: "bg-orange-500/25 text-orange-200",
   3: "bg-neon-red/25 text-neon-red",
   4: "bg-fuchsia-500/30 text-fuchsia-200",
+  5: "bg-rose-500/25 text-rose-200",
+  6: "bg-neon-blue/20 text-neon-blue",
+  7: "bg-white/10 text-white",
 };
 
 const TIER_0: string[] = [
@@ -81,16 +87,58 @@ const TIER_4: string[] = [
   "You are the human version of a gas station hot dog on hour six.",
 ];
 
+const TIER_5: string[] = [
+  "You talk like a person who thinks 'accountability' is a hate crime.",
+  "Your confidence is a loan. The interest is embarrassing.",
+  "You give advice like you’ve never been wrong, which is wild because you are right now.",
+  "You’ve got the vibe of a group project where the loudest person did the least.",
+  "You treat basic decency like it’s an optional add-on you didn’t purchase.",
+  "Your self-awareness is on airplane mode.",
+  "You think you’re the plot, but you’re the pop-up that blocks the plot.",
+  "Your opinions arrive uninvited and leave a mess like a toddler with glitter.",
+  "You radiate the energy of a man who says “just being honest” and then lies.",
+  "Your presence is a software update nobody consented to.",
+];
+
+const TIER_6: string[] = [
+  "You’re the reason the universe invented 'do not disturb.'",
+  "If consequences were rain, you’d still walk around shocked you’re wet.",
+  "You’re a walking reminder that confidence and competence have never met.",
+  "Your personality is a beta feature that should not have shipped.",
+  "You’ve got the aura of a refund request written in all caps.",
+  "You could make a therapist request hazard pay just by entering a room.",
+  "You’re the human version of buffering: loud, slow, and always in the way.",
+  "Even your shadow looks tired of you.",
+  "You give 'I peak in the comments section' energy.",
+  "Your vibe is an apology draft with no intention of sending it.",
+];
+
+const TIER_7: string[] = [
+  "You are so confidently incorrect you could power a small city.",
+  "You don’t have a personality — you have recurring notifications.",
+  "If self-reflection were a mirror, you’d still be looking at the wall and calling it growth.",
+  "You move through life like a pop quiz: nobody asked, everybody suffers.",
+  "Your life is a tutorial you keep skipping and then blaming the game.",
+  "You have the audacity of a man who breaks the rules and asks why the system exists.",
+  "Your emotional maturity is a loading bar stuck at 2%.",
+  "You’re the reason ‘mute’ is a love language.",
+  "Your inner child needs supervision.",
+  "Even your ego is like, 'hey… chill.'",
+];
+
 export const ROAST_BANK: Record<RoastTier, string[]> = {
   0: TIER_0,
   1: TIER_1,
   2: TIER_2,
   3: TIER_3,
   4: TIER_4,
+  5: TIER_5,
+  6: TIER_6,
+  7: TIER_7,
 };
 
 export function nextTier(t: RoastTier): RoastTier {
-  return Math.min(4, t + 1) as RoastTier;
+  return Math.min(7, t + 1) as RoastTier;
 }
 
 export function pickRoast(
@@ -133,5 +181,8 @@ export function angerFromInput(input: string): number {
   anger += hits;
   if (/[!]{2,}|[?]{2,}/.test(input)) anger += 1;
   if (input === input.toUpperCase() && input.trim().length > 3) anger += 2;
+  if (/\b(fuck|shit|bitch|asshole|idiot|moron|trash|garbage|clown)\b/i.test(input))
+    anger += 2;
+  if (lower.split(/\s+/).length >= 14) anger += 1;
   return anger;
 }
