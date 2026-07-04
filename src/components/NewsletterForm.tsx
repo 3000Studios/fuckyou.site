@@ -5,9 +5,10 @@ import { track } from "../lib/analytics";
 type Props = {
   placement: "inline" | "footer" | "exit-intent";
   compact?: boolean;
+  onSuccess?: () => void;
 };
 
-export function NewsletterForm({ placement, compact }: Props) {
+export function NewsletterForm({ placement, compact, onSuccess }: Props) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">(
     "idle"
@@ -35,6 +36,7 @@ export function NewsletterForm({ placement, compact }: Props) {
       setStatus("ok");
       setMessage("You're in. Check your inbox for a confirmation.");
       setEmail("");
+      onSuccess?.();
     } catch {
       setStatus("err");
       setMessage("Something broke. Try again in a minute.");
