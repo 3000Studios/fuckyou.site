@@ -12,6 +12,9 @@ import { article as a10 } from "./articles/things-that-ruin-your-mood";
 import { article as a11 } from "./articles/office-slack-meltdown";
 import { article as a12 } from "./articles/your-to-do-list-is-a-ponzi-scheme";
 import { article as a13 } from "./articles/the-gym-app-wants-your-location";
+import { article as a14 } from "./articles/the-group-chat-is-out-of-control";
+import { article as a15 } from "./articles/meetings-that-should-have-been-emails";
+import { article as a16 } from "./articles/five-stages-of-a-dead-phone-battery";
 
 export const ARTICLES: Article[] = [
   a1,
@@ -27,6 +30,9 @@ export const ARTICLES: Article[] = [
   a11,
   a12,
   a13,
+  a14,
+  a15,
+  a16,
 ];
 
 export const ARTICLES_BY_SLUG: Record<string, Article> = ARTICLES.reduce(
